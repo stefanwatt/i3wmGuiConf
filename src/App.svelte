@@ -3,7 +3,6 @@
 import { activeTab } from "./lib/store";
 import Tabs from "./lib/tabs.svelte";
 import Banner from "./lib/banner.svelte";
-
   const writeConfigFile = async () => {
     await invoke("write_config_file");
     alert("done!");

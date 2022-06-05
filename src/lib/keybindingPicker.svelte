@@ -1,5 +1,15 @@
 <script lang="ts">
+  import { get } from "svelte/store";
+
+  import Keybinding from "./keybinding.svelte";
+  import { isMod, substituteIfMod } from "./mods";
+  import { keybindings } from "./store";
+
   let keys = [];
+  $: substitutedKeys = keys.map((key) => substituteIfMod(key));
+  $: duplicateBindingError = !!(get(keybindings).find((binding) =>
+    binding.keys.every((key) => keys.includes(key))
+  ));
   let showAddKeybindingModal = false;
   let isBindingComplete = false;
 
@@ -31,27 +41,15 @@
     }, 100);
   };
 
-  const addBinding = () => {};
+  const addBinding = () => {
+    if (keys.length === 0) return;
+    keybindings.update((old) => [{ cmd: "none", keys }, ...old]);
+    reset()
+  };
 
   const reset = () => {
     keys = [];
   };
-
-  const MODS = [
-    { key: "Super", substitution: "Super" },
-    { key: "Shift", substitution: "Shift" },
-    { key: "Control", substitution: "Ctrl" },
-    { key: "Alt", substitution: "Alt" },
-  ];
-
-  const isMod = (key) => !!MODS.find(mod => mod.key.toLowerCase() === key.toLowerCase());
-
-  const substituteIfMod = (key) => {
-    if (!isMod(key)) return key;
-    const { substitution } = MODS.find((mod) => mod.key.toLowerCase() === key.toLowerCase());
-    return substitution;
-  };
-
 </script>
 
 <label for="my-modal" class="btn btn-primary modal-button">add keybinding</label
@@ -76,17 +74,14 @@
           type="text"
         />
       {/if}
-      <div class="mt-2 flex justify-center">
-        {#each keys as key, i }
-          <kbd class="kbd">{substituteIfMod(key)}</kbd>
-          <span class="flex mx-1 justify-center items-center">
-            {i < keys.length - 1 ? "+" : ""}
-          </span>
-        {/each}
-      </div>
+      <div class="my-4" />
+      <Keybinding keys={substitutedKeys} />
     </div>
+    {#if duplicateBindingError}
+    <p class="text-red-500">Error: duplicate binding</p>
+    {/if}
     <div class="modal-action">
-      <button on:click={showPicker} class="btn btn-primary">add</button>
+      <button disabled={duplicateBindingError} on:click={addBinding} class="btn btn-primary">add</button>
       <label for="my-modal" class="btn btn-secondary">cancel</label>
     </div>
   </div>
