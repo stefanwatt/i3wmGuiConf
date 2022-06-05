@@ -3,8 +3,7 @@
   all(not(debug_assertions), target_os = "windows"),
   windows_subsystem = "windows"
 )]
-
-
+use std::process::Command;
 use std::env;
 use std::fs::File;
 use std::io::Write;
@@ -15,6 +14,15 @@ async fn write_config_file(app: tauri::AppHandle) -> Result<(), String> {
   let mut file = File::create(config_file_path).unwrap();
   writeln!(&mut file, "Hello World!").unwrap();
   file.write(b"").unwrap();
+  Ok(())
+}
+#[tauri::command]
+async fn get_desktop_entries(app: tauri::AppHandle) -> Result<(), String> {
+  let output = Command::new("ls")
+    .arg("-l")
+    .arg("-a")
+    .spawn()
+    .expect("ls command failed to start");
   Ok(())
 }
 

@@ -1,10 +1,8 @@
-import { derived, writable } from "svelte/store";
-import Keybindings from "./keybindings.svelte";
+import {writable } from "svelte/store";
+import Keybindings from "./keybindings/keybindings.svelte";
 import General from "./general.svelte";
 import Startup from "./startup.svelte";
-import Appearance from "./appearance.svelte";
-import type { SvelteComponentDev } from "svelte/internal";
-
+import Appearance from "./appearance.svelte"
 export type Tab = {
   id:number;
   text:string;
@@ -18,10 +16,3 @@ export const tabs:Tab[]=[
 ]
 export const activeTab = writable(tabs[1])
 
-type keybinding = {
-  keys:string[];
-  cmd:string
-}
-export const keybindings = writable<keybinding[]>([
-  {keys:["Super","t"],cmd:"Open Terminal"}
-])

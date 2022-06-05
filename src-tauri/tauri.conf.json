@@ -12,7 +12,11 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "fs": {"all":true},
+      "shell": {
+        "scope":[{"name":"lsdesktopf","cmd": "lsdesktopf","args": ["--list"]}],
+        "execute": true
+      }
     },
     "bundle": {
       "active": true,

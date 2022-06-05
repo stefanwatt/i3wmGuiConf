@@ -1,7 +1,7 @@
 <script lang="ts">
   import { get } from "svelte/store";
-
-  import Keybinding from "./keybinding.svelte";
+  import CommandPicker from "./commandPicker.svelte";
+  import Keys from "./keys.svelte";
   import { isMod, substituteIfMod } from "./mods";
   import { keybindings } from "./store";
 
@@ -70,19 +70,20 @@
           use:focusInput
           on:keydown={onKeyDown}
           on:keyup={onKeyUp}
-          class="input input-ghost w-full"
+          class="input input-xs input-ghost w-full"
           type="text"
         />
       {/if}
       <div class="my-4" />
-      <Keybinding keys={substitutedKeys} />
+      <Keys keys={substitutedKeys} />
     </div>
     {#if duplicateBindingError}
     <p class="text-red-500">Error: duplicate binding</p>
     {/if}
+    <CommandPicker/>
     <div class="modal-action">
       <button disabled={duplicateBindingError} on:click={addBinding} class="btn btn-primary">add</button>
-      <label for="my-modal" class="btn btn-secondary">cancel</label>
+      <label on:click={reset} for="my-modal" class="btn btn-secondary">cancel</label>
     </div>
   </div>
 </div>
